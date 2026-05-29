@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZK AI Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar Overlay Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- Chat History Sidebar -->
+  <aside class="chat-sidebar" id="chatSidebar">
+    <div class="sidebar-header">
+      <h2>ZK</h2>
+      <button onclick="closeSidebar()">×</button>
+    </div>
+
+    <button class="new-chat-btn" onclick="newChat()">＋ New Chat</button>
+
+    <input
+      type="text"
+      id="chatSearchInput"
+      class="chat-search"
+      placeholder="Search chat..."
+      oninput="renderChatHistory()"
+    >
+
+    <div id="chatHistoryList" class="chat-history-list"></div>
+  </aside>
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <div class="logo">ZK</div>
+      <div>
+        <h2>ZK AI Assistant</h2>
+        <p id="brandText">ستاسو هوښیار AI مرستیال</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="quickLangBtn" onclick="cycleLanguage()">پښتو</button>
+      <button id="settingsBtn" onclick="openSettings()">Settings</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <section class="hero">
+      <h1>ZK AI Assistant</h1>
+      <p id="subtitle">سلام! زه ستا هوښیار AI مرستیال یم. خپله پوښتنه ولیکه.</p>
+    </section>
+
+    <section class="chat-container">
+      <div class="messages" id="messages"></div>
+
+      <div id="selectedFileBox" class="selected-file-box" style="display: none;">
+        <span id="selectedFileText"></span>
+        <button onclick="clearSelectedFile()">×</button>
+      </div>
+
+      <div class="input-area">
+
+        <div class="upload-area">
+          <button id="uploadBtn" class="upload-btn" onclick="toggleUploadMenu()">＋</button>
+
+          <div id="uploadMenu" class="upload-menu">
+            <button onclick="openCamera()">📷 Camera</button>
+            <button onclick="openGallery()">🖼 Gallery</button>
+            <button onclick="openFiles()">📎 Files</button>
+          </div>
+        </div>
+
+        <input type="text" id="userInput" placeholder="دلته خپله پوښتنه ولیکه...">
+
+        <button id="sendBtn" onclick="sendMessage()">ولېږه</button>
+      </div>
+
+      <!-- Hidden Upload Inputs -->
+      <input
+        type="file"
+        id="cameraInput"
+        accept="image/*"
+        capture="environment"
+        style="display: none;"
+        onchange="handleFileUpload(event)"
+      >
+
+      <input
+        type="file"
+        id="galleryInput"
+        accept="image/*"
+        style="display: none;"
+        onchange="handleFileUpload(event)"
+      >
+
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/*,.pdf,.txt"
+        style="display: none;"
+        onchange="handleFileUpload(event)"
+      >
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footerText">
+    Online AI Assistant · ZK AI
+  </footer>
+
+  <!-- Settings Overlay -->
+  <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+
+  <!-- Settings Left Side Panel -->
+  <aside class="settings-panel" id="settingsPanel">
+
+    <div class="settings-header">
+      <h2 id="settingsTitle">Settings</h2>
+      <button onclick="closeSettings()">×</button>
+    </div>
+
+    <!-- Language -->
+    <div class="settings-section">
+      <h3 id="languageTitle">Language</h3>
+      <button onclick="changeLanguage('ps')">پښتو</button>
+      <button onclick="changeLanguage('fa')">دری</button>
+      <button onclick="changeLanguage('en')">English</button>
+    </div>
+
+    <!-- Appearance -->
+    <div class="settings-section">
+      <h3 id="appearanceTitle">Appearance</h3>
+      <button id="themeBtn" onclick="toggleAppearance()">Dark</button>
+    </div>
+
+    <!-- Email Login -->
+    <div class="settings-section">
+      <h3 id="loginTitle">Login with Email</h3>
+
+      <input type="email" id="emailInput" placeholder="Enter your email">
+      <button id="saveEmailBtn" onclick="saveEmail()">Save Email</button>
+      <button id="openEmailBtn" onclick="openEmailApp()">Open Email App</button>
+
+      <p id="loginText"></p>
+    </div>
+
+    <!-- About -->
+    <div class="settings-section">
+      <h3 id="aboutTitle">About</h3>
+
+      <div class="about-item" id="helpItem" onclick="showHelpCenter()">Help Center</div>
+      <div class="about-item" id="termsItem" onclick="showTerms()">Terms of Use</div>
+      <div class="about-item" id="privacyItem" onclick="showPrivacy()">Privacy Policy</div>
+
+      <div class="about-item" id="zkAndroidItem">ZK AI for Android</div>
+      <div class="about-version">1.2026.111 (26)</div>
+
+      <button class="zk-service-btn" id="zkServiceBtn" onclick="showZkServices()">
+        ZK Services
+      </button>
+
+      <div id="aboutInfo" class="about-info"></div>
+    </div>
+
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
