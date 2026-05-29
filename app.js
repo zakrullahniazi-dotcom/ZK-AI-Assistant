@@ -3,6 +3,8 @@ let currentChatId = localStorage.getItem("currentChatId") || null;
 let selectedFile = null;
 let selectedFileBase64 = null;
 
+const API_URL = "https://zk-ai-assistant-worker.zakrullah-niazi-af.workers.dev";
+
 const languages = {
   ps: {
     dir: "rtl",
@@ -36,7 +38,7 @@ const languages = {
     files: "📎 Files",
     fileSelected: "فایل انتخاب شو: ",
     thinking: "فکر کوي...",
-    serverError: "Server connection error. Terminal کې server باید چالان وي.",
+    serverError: "Server connection error. انټرنېټ یا Cloudflare Worker وګورئ.",
     aiError: "Sorry, I could not get an AI response.",
 
     enterEmail: "Please enter your email.",
@@ -53,7 +55,7 @@ const languages = {
       "<strong>Privacy Policy</strong><br>ستاسو email او chat history یوازې په همدې browser کې ساتل کېږي.",
 
     servicesText:
-      "<strong>ZK اعلان</strong><br>که تاسو هر ډول Application، Website او Database جوړول غواړئ، د ذکرالله نیازي سره تماس ونیسئ.<br><br>Company: ZK<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
+      "<strong>ZK اعلان</strong><br>که تاسو هر ډول Application، Website او Database جوړول غواړئ، د محترم ذکرالله نیازي سره تماس ونیسئ.<br><br>Company: زیډ کې<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
   },
 
   fa: {
@@ -88,7 +90,7 @@ const languages = {
     files: "📎 Files",
     fileSelected: "فایل انتخاب شد: ",
     thinking: "در حال فکر کردن...",
-    serverError: "Server connection error. Terminal باید روشن باشد.",
+    serverError: "Server connection error. انترنت یا Cloudflare Worker را بررسی کنید.",
     aiError: "Sorry, I could not get an AI response.",
 
     enterEmail: "Please enter your email.",
@@ -105,7 +107,7 @@ const languages = {
       "<strong>Privacy Policy</strong><br>ایمیل و تاریخچه چت شما فقط در همین مرورگر ذخیره می‌شود.",
 
     servicesText:
-      "<strong>ZK اعلان</strong><br>اگر شما می‌خواهید هر نوع Application، Website و Database بسازید، با ذکرالله نیازی تماس بگیرید.<br><br>Company: ZK<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
+      "<strong>ZK اعلان</strong><br>اگر شما می‌خواهید هر نوع Application، Website و Database بسازید، با محترم ذکرالله نیازي تماس بگیرید.<br><br>Company: زیډ کې<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
   },
 
   en: {
@@ -140,7 +142,7 @@ const languages = {
     files: "📎 Files",
     fileSelected: "File selected: ",
     thinking: "Thinking...",
-    serverError: "Server connection error. Make sure server is running.",
+    serverError: "Server connection error. Please check internet or Cloudflare Worker.",
     aiError: "Sorry, I could not get an AI response.",
 
     enterEmail: "Please enter your email.",
@@ -157,13 +159,12 @@ const languages = {
       "<strong>Privacy Policy</strong><br>Your email and chat history are saved only in this browser using localStorage.",
 
     servicesText:
-      "<strong>ZK Services</strong><br>If you want to build any Application, Website, or Database, contact Zakrullah Niazi.<br><br>Company: ZK<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
+      "<strong>ZK Services</strong><br>If you want to build any Application, Website, or Database, contact Mr. Zakrullah Niazi.<br><br>Company: ZK<br>Email: zakrullahniazi786@gmail.com<br>Phone: 0784121912"
   }
 };
 
 const langOrder = ["ps", "fa", "en"];
 
-/* Language */
 function changeLanguage(lang) {
   currentLang = lang;
   const t = languages[lang];
@@ -222,7 +223,6 @@ function cycleLanguage() {
   changeLanguage(nextLang);
 }
 
-/* Settings */
 function openSettings() {
   document.getElementById("settingsPanel").classList.add("active");
   document.getElementById("settingsOverlay").classList.add("active");
@@ -233,7 +233,6 @@ function closeSettings() {
   document.getElementById("settingsOverlay").classList.remove("active");
 }
 
-/* Sidebar */
 function openSidebar() {
   document.getElementById("chatSidebar").classList.add("active");
   document.getElementById("sidebarOverlay").classList.add("active");
@@ -253,7 +252,6 @@ function toggleSidebar() {
   }
 }
 
-/* Dark / Light */
 function toggleAppearance() {
   document.body.classList.toggle("dark");
 
@@ -268,7 +266,6 @@ function toggleAppearance() {
   }
 }
 
-/* Email */
 function saveEmail() {
   const emailInput = document.getElementById("emailInput");
   const loginText = document.getElementById("loginText");
@@ -293,7 +290,6 @@ function openEmailApp() {
   window.location.href = "mailto:zakrullahniazi786@gmail.com";
 }
 
-/* About */
 function showHelpCenter() {
   document.getElementById("aboutInfo").innerHTML = languages[currentLang].helpText;
 }
@@ -321,6 +317,7 @@ function saveChats(chats) {
 
 function createChat() {
   const chats = getChats();
+
   const chat = {
     id: Date.now().toString(),
     title: "New Chat",
@@ -364,7 +361,7 @@ function updateCurrentChat(chat) {
 }
 
 function newChat() {
-  const chat = createChat();
+  createChat();
   document.getElementById("messages").innerHTML = "";
   clearSelectedFile();
   renderChatHistory();
@@ -407,7 +404,11 @@ function deleteChat(chatId, event) {
 
 function renderChatHistory() {
   const list = document.getElementById("chatHistoryList");
-  const search = document.getElementById("chatSearchInput").value.toLowerCase();
+  const searchInput = document.getElementById("chatSearchInput");
+
+  if (!list || !searchInput) return;
+
+  const search = searchInput.value.toLowerCase();
   const chats = getChats();
 
   list.innerHTML = "";
@@ -417,7 +418,10 @@ function renderChatHistory() {
     .forEach(chat => {
       const item = document.createElement("div");
       item.className = "chat-history-item";
-      if (chat.id === currentChatId) item.classList.add("active");
+
+      if (chat.id === currentChatId) {
+        item.classList.add("active");
+      }
 
       item.onclick = function () {
         loadChat(chat.id);
@@ -465,6 +469,7 @@ function handleFileUpload(event) {
   selectedFile = file;
 
   const reader = new FileReader();
+
   reader.onload = function () {
     selectedFileBase64 = reader.result.split(",")[1];
 
@@ -481,12 +486,15 @@ function clearSelectedFile() {
   selectedFile = null;
   selectedFileBase64 = null;
 
-  document.getElementById("selectedFileBox").style.display = "none";
-  document.getElementById("selectedFileText").innerText = "";
+  const selectedFileBox = document.getElementById("selectedFileBox");
+  const selectedFileText = document.getElementById("selectedFileText");
 
-  document.getElementById("cameraInput").value = "";
-  document.getElementById("galleryInput").value = "";
-  document.getElementById("fileInput").value = "";
+  if (selectedFileBox) selectedFileBox.style.display = "none";
+  if (selectedFileText) selectedFileText.innerText = "";
+
+  if (document.getElementById("cameraInput")) document.getElementById("cameraInput").value = "";
+  if (document.getElementById("galleryInput")) document.getElementById("galleryInput").value = "";
+  if (document.getElementById("fileInput")) document.getElementById("fileInput").value = "";
 }
 
 /* Messages */
@@ -547,7 +555,7 @@ async function sendMessage() {
   input.value = "";
 
   try {
-    const response = await fetch("https://zk-ai-assistant-worker.zakrullah-niazi-af.workers.dev", {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -620,3 +628,16 @@ window.onload = function () {
     }
   });
 };
+
+/* PWA Service Worker */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js")
+      .then(function () {
+        console.log("Service Worker registered");
+      })
+      .catch(function (error) {
+        console.log("Service Worker registration failed:", error);
+      });
+  });
+}

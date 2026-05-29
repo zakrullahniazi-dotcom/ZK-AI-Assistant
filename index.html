@@ -3,9 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>ZK AI Assistant</title>
+
+  <!-- PWA Mobile App -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- Sidebar Overlay Mobile -->
@@ -37,6 +46,7 @@
       <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
       <div class="logo">ZK</div>
+
       <div>
         <h2>ZK AI Assistant</h2>
         <p id="brandText">ستاسو هوښیار AI مرستیال</p>
@@ -65,7 +75,6 @@
       </div>
 
       <div class="input-area">
-
         <div class="upload-area">
           <button id="uploadBtn" class="upload-btn" onclick="toggleUploadMenu()">＋</button>
 
@@ -76,7 +85,11 @@
           </div>
         </div>
 
-        <input type="text" id="userInput" placeholder="دلته خپله پوښتنه ولیکه...">
+        <input
+          type="text"
+          id="userInput"
+          placeholder="دلته خپله پوښتنه ولیکه..."
+        >
 
         <button id="sendBtn" onclick="sendMessage()">ولېږه</button>
       </div>
@@ -144,6 +157,7 @@
       <h3 id="loginTitle">Login with Email</h3>
 
       <input type="email" id="emailInput" placeholder="Enter your email">
+
       <button id="saveEmailBtn" onclick="saveEmail()">Save Email</button>
       <button id="openEmailBtn" onclick="openEmailApp()">Open Email App</button>
 
@@ -170,6 +184,7 @@
 
   </aside>
 
+  <!-- JavaScript -->
   <script src="app.js"></script>
 </body>
 </html>
